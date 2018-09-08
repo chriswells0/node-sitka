@@ -1,6 +1,6 @@
 {
   "name": "sitka",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "An extremely lightweight but powerful Node.js logger that's great for modern cloud/serverless applications.",
   "keywords": [
     "log",
