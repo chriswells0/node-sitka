@@ -1,0 +1,39 @@
+{
+  "name": "sitka",
+  "version": "0.8.0",
+  "description": "An extremely lightweight but powerful Node.js logger that's great for modern cloud/serverless applications.",
+  "keywords": [
+    "log",
+    "logger",
+    "lightweight",
+    "flexible",
+    "aws",
+    "cloud",
+    "lambda",
+    "serverless",
+    "typescript"
+  ],
+  "author": {
+  	"name": "Chris Wells",
+  	"url": "https://chriswells.io"
+  },
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chriswells/node-sitka.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "npm run clean; npm run lint && tsc",
+    "clean": "rm -r ./dist",
+    "lint": "tslint src/**/*.ts",
+    "prepublish": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.9.2",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.1"
+  }
+}
