@@ -20,7 +20,7 @@
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chriswells/node-sitka.git"
+    "url": "https://github.com/chriswells0/node-sitka.git"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
