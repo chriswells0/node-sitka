@@ -48,7 +48,7 @@ Output:
 
 To specify additional configuration properties, pass an object to `Logger.getLogger()` consisting of any properties shown in the [Instance Configuration](#instance-configuration) section below.  For a description of supported variables, refer to the [Log Format](#log-format) section.
 
-1. JSON example using the `AWS_REGION` and `AWS_LAMBDA_FUNCTION_NAME` environment variables, which are available in Lambda functions:
+1) JSON example using the `AWS_REGION` and `AWS_LAMBDA_FUNCTION_NAME` environment variables, which are available in Lambda functions:
 
 ```javascript
 var logger = Logger.getLogger({
@@ -61,10 +61,10 @@ logger.info('Someone should know about this.');
 
 Output:
 
-> { "time": "2018-09-05T23:47:45.482Z", level": "INFO", "name": "MyLogger", "function": "my-lambda", "message": "Executing in: us-west-1" }\
-> { "time": "2018-09-05T23:47:45.827Z", level": "INFO", "name": "MyLogger", "function": "my-lambda", "message": "Someone should know about this." }
+> { "function": "my-lambda", "time": "2018-09-05T23:47:45.482Z", level": "INFO", "name": "MyLogger", "message": "Executing in: us-west-1" }\
+> { "function": "my-lambda", "time": "2018-09-05T23:47:45.827Z", level": "INFO", "name": "MyLogger", "message": "Someone should know about this." }
 
-2. Example showing usage of the context property:
+2) Example showing usage of the context property:
 
 ```javascript
 var myObj = { myVar: 'initial value' };
@@ -130,7 +130,7 @@ Both the log format and log messages may contain the following variables using t
 
 * `LEVEL`: The log level for this log entry
 * `MESSAGE`: The provided log message
-* `NAME`: The name of the current logger
+* `NAME`: The name of the current logger (only available in log format)
 * `TIMESTAMP`: Date and time the entry was logged
 * `CTX:VAR_NAME`: Value of the VAR_NAME property from the log context
 * `ENV:VAR_NAME`: The value of the VAR_NAME environment variable
