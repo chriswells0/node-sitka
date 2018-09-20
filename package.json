@@ -26,15 +26,17 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "npm run clean; npm run lint && tsc",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "clean": "rm -r ./dist",
     "lint": "tslint src/**/*.ts",
     "postversion": "git push && git push --tags",
     "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "version": "npm run build"
+    "version": "npm run build && npm run changelog"
   },
   "devDependencies": {
     "@types/node": "^10.9.2",
+    "conventional-changelog-cli": "^2.0.5",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1"
   }
