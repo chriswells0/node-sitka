@@ -21,14 +21,14 @@ enum Format {
 }
 
 enum Level {
-		OFF,
-		FATAL,
-		ERROR,
-		WARN,
-		INFO,
-		DEBUG,
-		TRACE,
-		ALL,
+	OFF,
+	FATAL,
+	ERROR,
+	WARN,
+	INFO,
+	DEBUG,
+	TRACE,
+	ALL,
 }
 
 export default class Logger {
