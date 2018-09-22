@@ -21,7 +21,7 @@ enum Format {
 }
 
 enum Level {
-	OFF,
+	OFF = 1, // Start with 1 to simplify truthiness tests during initialization. -- cwells
 	FATAL,
 	ERROR,
 	WARN,
