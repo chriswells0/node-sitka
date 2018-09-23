@@ -1,3 +1,7 @@
+# Generated directories:
+coverage/
+
+# TypeScript files:
 src/
 tsconfig.json
 tslint.json
