@@ -13,6 +13,8 @@ interface ILogConfig {
 	name?: string;
 }
 
+interface ILogConfigWithName extends ILogConfig { name: string; }
+
 enum Format {
 	JSON = '{ "timestamp": "${TIMESTAMP}", "level": "${LEVEL}", "name": "${NAME}", "message": "${MESSAGE}" }',
 	JSON_NO_TIME = '{ "level": "${LEVEL}", "name": "${NAME}", "message": "${MESSAGE}" }',
@@ -45,7 +47,7 @@ export default class Logger {
 		}
 		config.name = config.name || 'Sitka';
 		if (!this._loggers.hasOwnProperty(config.name)) {
-			this._loggers[config.name] = new Logger(config);
+			this._loggers[config.name] = new Logger(config as ILogConfigWithName);
 		}
 		return this._loggers[config.name];
 	}
@@ -89,8 +91,8 @@ export default class Logger {
 
 	/* Constructor */
 
-	private constructor(config: ILogConfig) {
-		this._name = config.name || 'Sitka';
+	private constructor(config: ILogConfigWithName) {
+		this._name = config.name;
 		this._context = config.context || {};
 		const envLogLevel: string = this.getEnvVariable('LOG_LEVEL', true).replace('Logger.Level.', '');
 		this._level = config.level
