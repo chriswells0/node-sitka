@@ -34,7 +34,7 @@
     "cover:check": "istanbul check-coverage --statements 95 --branches 95 --functions 100 --lines 95",
     "lint": "tslint src/**/*.ts",
     "postversion": "git push && git push --tags",
-    "prepare": "npm run build && npm run cover && npm run cover:check",
+    "prepare": "npm run build",
     "test": "mocha --reporter spec",
     "version": "npm run prepare && npm run changelog"
   },
