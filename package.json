@@ -30,7 +30,7 @@
     "changelog:unreleased": "conventional-changelog -p angular -u",
     "clean": "rm -r ./coverage; rm -r ./dist",
     "clean:all": "npm run clean; rm -r ./node_modules",
-    "cover": "istanbul cover _mocha -- -R spec test/*.js",
+    "cover": "istanbul cover node_modules/mocha/bin/_mocha test/*.js -- -R spec",
     "cover:check": "istanbul check-coverage --statements 95 --branches 95 --functions 100 --lines 95",
     "lint": "tslint src/**/*.ts",
     "preversion": "npm run build && npm run cover && npm run cover:check",
