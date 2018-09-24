@@ -43,6 +43,7 @@
     "@types/node": "^10.9.2",
     "chai": "^4.1.2",
     "conventional-changelog-cli": "^2.0.5",
+    "coveralls": "^3.0.2",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
     "test-console": "^1.1.0",
