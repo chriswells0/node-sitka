@@ -1,3 +1,6 @@
+# Configuration files:
+.travis.yml
+
 # Generated directories:
 coverage/
 
