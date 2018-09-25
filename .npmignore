@@ -2,6 +2,7 @@
 .travis.yml
 
 # Generated directories:
+.nyc_output/
 coverage/
 
 # TypeScript files:
