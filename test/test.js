@@ -270,7 +270,7 @@ describe('Environment variables', () => {
 	it('should return empty values when process.env is not available', () => {
 		var oldEnv = process && process.env;
 		if (oldEnv) {
-			process.env = null;
+			process.env = {};
 		}
 		var logger = Logger.getLogger({ name: 'ENVNotAvailable', format: '${MESSAGE}' });
 		var output = stdout.inspectSync(function() {

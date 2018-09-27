@@ -174,7 +174,8 @@ export default class Logger {
 	}
 
 	private getEnvVariable(property: string, checkCustom: boolean = false): string {
-		if (process && process.env) {
+		// The keys check allows unit tests to succeed with env overwritten. -- cwells
+		if (process && process.env && Object.keys(process.env).length !== 0) {
 			if (checkCustom && process.env.hasOwnProperty(property + '_' + this._name)) {
 				return process.env[property + '_' + this._name] as string;
 			} else if (process.env.hasOwnProperty(property)) {
