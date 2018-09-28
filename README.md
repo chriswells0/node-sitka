@@ -1,10 +1,11 @@
 # Sitka
 
-[![NPM](https://nodei.co/npm/sitka.png?compact=true)](https://nodei.co/npm/sitka/)
+[![NPM Version](https://badge.fury.io/js/sitka.svg)](https://badge.fury.io/js/sitka)
+[![GitHub Issues](https://img.shields.io/github/issues/chriswells0/node-sitka.svg?style=popout)](https://github.com/chriswells0/node-sitka/issues)
 [![Build Status](https://travis-ci.org/chriswells0/node-sitka.svg?branch=master)](https://travis-ci.org/chriswells0/node-sitka)
 [![Coverage Status](https://coveralls.io/repos/github/chriswells0/node-sitka/badge.svg?branch=master)](https://coveralls.io/github/chriswells0/node-sitka?branch=master)
 [![Dependencies Status](https://david-dm.org/chriswells0/node-sitka/status.svg)](https://david-dm.org/chriswells0/node-sitka)
-[![DevDependencies Status](https://david-dm.org/chriswells0/node-sitka/dev-status.svg)](https://david-dm.org/chriswells0/node-sitka?type=dev)
+[![Dev Dependencies Status](https://david-dm.org/chriswells0/node-sitka/dev-status.svg)](https://david-dm.org/chriswells0/node-sitka?type=dev)
 
 An extremely lightweight but powerful Node.js logger that's great for modern cloud/serverless applications.
 
