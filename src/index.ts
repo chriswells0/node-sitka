@@ -127,7 +127,7 @@ export class Logger {
 		return (this._level >= LogLevel.INFO ? this.log('INFO', message, ...args) : false);
 	}
 
-	public setContext(context: ILogContext | string, value?: string): void {
+	public setContext(context: ILogContext | string, value?: any): void {
 		if (typeof context === 'string') {
 			this._context[context] = value;
 		} else {
