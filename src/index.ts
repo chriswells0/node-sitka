@@ -161,7 +161,13 @@ export class Logger {
 		} else if (typeof item === 'object') {
 			const properties: string[] = [];
 			for (const property in item) {
-				if (item.hasOwnProperty(property)) {
+				if (typeof item[property] === 'undefined') {
+					properties.push(property + ': undefined');
+				} else if (item[property] === null) {
+					properties.push(property + ': null');
+				} else if (typeof item[property] === 'string') {
+					properties.push(property + ': "' + item[property] + '"');
+				} else {
 					properties.push(property + ': ' + this.convertToString(item[property]));
 				}
 			}
