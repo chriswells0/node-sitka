@@ -1,3 +1,14 @@
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/chriswells0/node-sitka/compare/v1.0.0...v1.0.1) (2018-09-30)
+
+
+### Bug Fixes
+
+* Allow properties of parent class to be printed. ([8320c31](https://github.com/chriswells0/node-sitka/commit/8320c31))
+* Do not restrict setContext() values to strings. ([4c0cf2d](https://github.com/chriswells0/node-sitka/commit/4c0cf2d))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/chriswells0/node-sitka/compare/v0.8.1...v1.0.0) (2018-09-28)
 
