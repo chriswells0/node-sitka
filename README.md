@@ -111,8 +111,8 @@ The following configuration properties are available:
 | level            | Minimum level of log entries to be written                               | Logger.Level.ALL                                     | constructor, environment properties |
 | format           | Structure to use for every log entry                                     | '[\${TIMESTAMP}] [\${LEVEL}] [\${NAME}] \${MESSAGE}' | constructor, environment properties |
 | context          | Variables that can be referenced in log messages for a specific logger   | {}                                                   | instance method, constructor        |
-| errorWriter      | Function for writing log messages at FATAL or ERROR levels               | console.error() \|\| process.stderr.write()          | constructor, static method          |
-| logWriter        | Function for writing log messages at any level other than FATAL or ERROR | console.log() \|\| process.stdout.write()            | constructor, static method          |
+| errorWriter      | Function for writing log messages at FATAL or ERROR levels               | console.error()                                      | constructor, static method          |
+| logWriter        | Function for writing log messages at any level other than FATAL or ERROR | console.log()                                        | constructor, static method          |
 
 Note that the timestamp is automatically omitted from the default log format when Sitka detects an AWS Lambda or Google Cloud environment since they add their own timestamp prefix.
 

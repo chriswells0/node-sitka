@@ -72,10 +72,8 @@ export class Logger {
 
 	private static _globalContext: ILogContext = {};
 	private static _loggers: { [name: string]: Logger } = {};
-	private static _logWriter: LogFunction = (console && console.log) // tslint:disable-line:no-console
-											|| (process && process.stdout && process.stdout.write);
-	private static _errorWriter: LogFunction = (console && console.error) // tslint:disable-line:no-console
-											|| (process && process.stderr && process.stderr.write);
+	private static _logWriter: LogFunction = console.log; // tslint:disable-line:no-console
+	private static _errorWriter: LogFunction = console.error; // tslint:disable-line:no-console
 
 	/* Private Instance Fields */
 
