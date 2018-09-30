@@ -1,10 +1,16 @@
 # Configuration files:
+.nycrc
 .travis.yml
 
 # Generated directories:
+.nyc_output/
 coverage/
+
+# Unit tests:
+test/
 
 # TypeScript files:
 src/
+types/
 tsconfig.json
 tslint.json
