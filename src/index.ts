@@ -1,6 +1,6 @@
 'use strict';
 
-type LogFunction = (...args: any[]) => any;
+export type LogFunction = (...args: any[]) => any;
 
 interface ILogContext { [key: string]: any; }
 
@@ -8,21 +8,21 @@ interface ILogConfig {
 	context?: ILogContext;
 	errorWriter?: LogFunction;
 	format?: string;
-	level?: Level;
+	level?: LogLevel;
 	logWriter?: LogFunction;
 	name?: string;
 }
 
 interface ILogConfigWithName extends ILogConfig { name: string; }
 
-enum Format {
+export enum LogFormat {
 	JSON = '{ "timestamp": "${TIMESTAMP}", "level": "${LEVEL}", "name": "${NAME}", "message": "${MESSAGE}" }',
 	JSON_NO_TIME = '{ "level": "${LEVEL}", "name": "${NAME}", "message": "${MESSAGE}" }',
 	TEXT = '[${TIMESTAMP}] [${LEVEL}] [${NAME}] ${MESSAGE}',
 	TEXT_NO_TIME = '[${LEVEL}] [${NAME}] ${MESSAGE}',
 }
 
-enum Level {
+export enum LogLevel {
 	OFF = 1, // Start with 1 to simplify truthiness tests during initialization. -- cwells
 	FATAL,
 	ERROR,
@@ -33,11 +33,11 @@ enum Level {
 	ALL,
 }
 
-export default class Logger {
+export class Logger {
 	/* Public Static Fields */
 
-	public static readonly Format = Format;
-	public static readonly Level = Level;
+	public static readonly Format = LogFormat;
+	public static readonly Level = LogLevel;
 
 	/* Public Static Methods */
 
@@ -84,7 +84,7 @@ export default class Logger {
 	private readonly _escapedVar: RegExp = /\\([$%]){/g;
 	private _context: ILogContext;
 	private _format: string;
-	private _level: Level;
+	private _level: LogLevel;
 	private _name: string;
 	private _logWriter: LogFunction | undefined;
 	private _errorWriter: LogFunction | undefined;
@@ -94,16 +94,16 @@ export default class Logger {
 	private constructor(config: ILogConfigWithName) {
 		this._name = config.name;
 		this._context = config.context || {};
-		const envLogLevel: string = this.getEnvVariable('LOG_LEVEL', true).replace('Logger.Level.', '');
+		const envLogLevel: string = this.getEnvVariable('LOG_LEVEL', true).replace(/Log(ger\.)?Level\./, '');
 		this._level = config.level
-					|| (Level.hasOwnProperty(envLogLevel) && Level[envLogLevel as keyof typeof Level])
-					|| Level.ALL;
+					|| (LogLevel.hasOwnProperty(envLogLevel) && LogLevel[envLogLevel as keyof typeof LogLevel])
+					|| LogLevel.ALL;
 		this._logWriter = config.logWriter || undefined;
 		this._errorWriter = config.errorWriter || undefined;
 		this._format = config.format
 					|| this.getEnvVariable('LOG_FORMAT', true)
 					|| (this.getEnvVariable('LAMBDA_TASK_ROOT') || this.getEnvVariable('GCP_PROJECT')
-						? Logger.Format.TEXT_NO_TIME : Logger.Format.TEXT);
+						? LogFormat.TEXT_NO_TIME : LogFormat.TEXT);
 		// Perform static replacements now so fewer are needed for each log entry. -- cwells
 		this._format = this._format.replace(this._escapedVar, '$1_SITKA_ESCAPED_VAR_{')
 									.replace(/[$%]\{NAME\}/g, this._name);
@@ -112,19 +112,19 @@ export default class Logger {
 	/* Public Instance Methods */
 
 	public debug(message: any, ...args: any[]): any {
-		return (this._level >= Level.DEBUG ? this.log('DEBUG', message, ...args) : false);
+		return (this._level >= LogLevel.DEBUG ? this.log('DEBUG', message, ...args) : false);
 	}
 
 	public error(message: any, ...args: any[]): any {
-		return (this._level >= Level.ERROR ? this.log('ERROR', message, ...args) : false);
+		return (this._level >= LogLevel.ERROR ? this.log('ERROR', message, ...args) : false);
 	}
 
 	public fatal(message: any, ...args: any[]): any {
-		return (this._level >= Level.FATAL ? this.log('FATAL', message, ...args) : false);
+		return (this._level >= LogLevel.FATAL ? this.log('FATAL', message, ...args) : false);
 	}
 
 	public info(message: any, ...args: any[]): any {
-		return (this._level >= Level.INFO ? this.log('INFO', message, ...args) : false);
+		return (this._level >= LogLevel.INFO ? this.log('INFO', message, ...args) : false);
 	}
 
 	public setContext(context: ILogContext | string, value?: string): void {
@@ -136,11 +136,11 @@ export default class Logger {
 	}
 
 	public trace(message: any, ...args: any[]): any {
-		return (this._level >= Level.TRACE ? this.log('TRACE', message, ...args) : false);
+		return (this._level >= LogLevel.TRACE ? this.log('TRACE', message, ...args) : false);
 	}
 
 	public warn(message: any, ...args: any[]): any {
-		return (this._level >= Level.WARN ? this.log('WARN', message, ...args) : false);
+		return (this._level >= LogLevel.WARN ? this.log('WARN', message, ...args) : false);
 	}
 
 	/* Private Instance Methods */
