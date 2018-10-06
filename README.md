@@ -1,11 +1,11 @@
 # Sitka
 
-[![NPM Version](https://badge.fury.io/js/sitka.svg)](https://badge.fury.io/js/sitka)
-[![GitHub Issues](https://img.shields.io/github/issues/chriswells0/node-sitka.svg?style=popout)](https://github.com/chriswells0/node-sitka/issues)
-[![Build Status](https://travis-ci.org/chriswells0/node-sitka.svg?branch=master)](https://travis-ci.org/chriswells0/node-sitka)
-[![Coverage Status](https://coveralls.io/repos/github/chriswells0/node-sitka/badge.svg?branch=master)](https://coveralls.io/github/chriswells0/node-sitka?branch=master)
-[![Dependencies Status](https://david-dm.org/chriswells0/node-sitka/status.svg)](https://david-dm.org/chriswells0/node-sitka)
-[![Dev Dependencies Status](https://david-dm.org/chriswells0/node-sitka/dev-status.svg)](https://david-dm.org/chriswells0/node-sitka?type=dev)
+[![Package Version][package-image]][package-url]
+[![Open Issues][issues-image]][issues-url]
+[![Build Status][build-image]][build-url]
+[![Coverage Status][coverage-image]][coverage-url]
+[![Dependencies Status][dependencies-image]][dependencies-url]
+[![Dev Dependencies Status][dev-dependencies-image]][dev-dependencies-url]
 
 An extremely lightweight but powerful Node.js logger that's great for modern cloud/serverless applications.
 
@@ -186,3 +186,16 @@ Read what people are saying about Sitka:
 ## Contributing
 
 Sitka aims to remain lightweight with a focus on simple flexibility over complex features.  PRs are very welcome for bug fixes. Before writing any code for an additional feature, please submit a PR describing the intended change to determine whether the feature would be considered.
+
+[package-image]: https://badge.fury.io/js/sitka.svg
+[package-url]: https://badge.fury.io/js/sitka
+[issues-image]: https://img.shields.io/github/issues/chriswells0/node-sitka.svg?style=popout
+[issues-url]: https://github.com/chriswells0/node-sitka/issues
+[build-image]: https://travis-ci.org/chriswells0/node-sitka.svg?branch=master
+[build-url]: https://travis-ci.org/chriswells0/node-sitka
+[coverage-image]: https://coveralls.io/repos/github/chriswells0/node-sitka/badge.svg?branch=master
+[coverage-url]: https://coveralls.io/github/chriswells0/node-sitka?branch=master
+[dependencies-image]: https://david-dm.org/chriswells0/node-sitka/status.svg
+[dependencies-url]: https://david-dm.org/chriswells0/node-sitka
+[dev-dependencies-image]: https://david-dm.org/chriswells0/node-sitka/dev-status.svg
+[dev-dependencies-url]: https://david-dm.org/chriswells0/node-sitka?type=dev
