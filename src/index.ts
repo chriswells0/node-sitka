@@ -191,8 +191,8 @@ export class Logger {
 
 	private log(level: string, message: any, ...args: any[]): any {
 		message = this.convertToString(message);
-		if (/"[$%]\{MESSAGE\}"/.test(this._format)) { // Message is inside quotes, so escape its quotes. -- cwells
-			message = message.replace(/"/g, '\\"');
+		if (/"[$%]\{MESSAGE\}"/.test(this._format)) { // Message is inside quotes, so escape it. -- cwells
+			message = message.replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
 		}
 		message = this._format.replace(/[$%]\{LEVEL\}/g, level)
 					.replace(/[$%]\{TIMESTAMP\}/g, Date())
