@@ -450,11 +450,12 @@ describe('Instance context variables', () => {
 		});
 		Logger.setGlobalContext(globalContext);
 		Logger.setGlobalContext('globalVar', 'globalValue');
+		Logger.setGlobalContext('globalVarObject', { 'test': 'value' });
 		const output: string[] = stdout.inspectSync(() => {
-			logger.info('${CTX:globalVar}, %{CTX:globalVar}, ${CTX:global.varOne}, %{CTX:global.varOne}');
+			logger.info('${CTX:globalVar}, %{CTX:globalVar}, ${CTX:globalVarObject.test}, %{CTX:globalVarObject.test}, ${CTX:global.varOne}, %{CTX:global.varOne}');
 		});
 		expect(output).to.have.lengthOf(1, '1 line was logged');
-		expect(output[0]).to.equal('globalValue, globalValue, globalValueOne, globalValueOne\n',
+		expect(output[0]).to.equal('globalValue, globalValue, value, value, globalValueOne, globalValueOne\n',
 									'created the correct log entry');
 	});
 	it('should allow setting the context with instance methods', () => {
