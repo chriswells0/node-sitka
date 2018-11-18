@@ -56,7 +56,7 @@ export class Logger {
 		this._errorWriter = errorWriter;
 	}
 
-	public static setGlobalContext(context: ILogContext | string, value?: string): void {
+	public static setGlobalContext(context: ILogContext | string, value?: any): void {
 		if (typeof context === 'string') {
 			this._globalContext[context] = value;
 		} else {
