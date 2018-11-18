@@ -134,7 +134,7 @@ describe('Predefined log formats', () => {
 	it('should produce correct log entries when set to JSON_NO_TIME', () => {
 		const logger: Logger = Logger.getLogger({ name: 'FormatJSON_NO_TIME', format: LogFormat.JSON_NO_TIME });
 		const output: string[] = stdout.inspectSync(() => {
-			logger.info('Test message.');
+			logger.info('Test with "quotes" in it.');
 		});
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		let jsonRecord;
@@ -143,7 +143,7 @@ describe('Predefined log formats', () => {
 		} catch (ex) { /* Do nothing. */ }
 		expect(jsonRecord, 'is valid JSON').to.exist; // tslint:disable-line:no-unused-expression
 		expect(jsonRecord).to.have.property('level', 'INFO', 'includes the correct log level');
-		expect(jsonRecord).to.have.property('message', 'Test message.', 'includes the correct log message');
+		expect(jsonRecord).to.have.property('message', 'Test with "quotes" in it.', 'includes the correct log message');
 		expect(jsonRecord).to.have.property('name', 'FormatJSON_NO_TIME', 'includes the correct log name');
 		expect(jsonRecord, 'does not have a timestamp property').to.not.have.property('timestamp');
 	});

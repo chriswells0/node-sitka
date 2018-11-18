@@ -190,9 +190,13 @@ export class Logger {
 	}
 
 	private log(level: string, message: any, ...args: any[]): any {
+		message = this.convertToString(message);
+		if (/"[$%]\{MESSAGE\}"/.test(this._format)) { // Message is inside quotes, so escape its quotes. -- cwells
+			message = message.replace(/"/g, '\\"');
+		}
 		message = this._format.replace(/[$%]\{LEVEL\}/g, level)
 					.replace(/[$%]\{TIMESTAMP\}/g, Date())
-					.replace(/[$%]\{MESSAGE\}/g, this.convertToString(message).replace(this._escapedVar, '$1_SITKA_ESCAPED_VAR_{'));
+					.replace(/[$%]\{MESSAGE\}/g, message.replace(this._escapedVar, '$1_SITKA_ESCAPED_VAR_{'));
 		// Replace ${ENV:VAR} and %{ENV:VAR} with the value of the VAR environment variable. -- cwells
 		let matches: RegExpMatchArray | null = message.match(this._envVarTest);
 		while (matches && matches.length === 2) {
