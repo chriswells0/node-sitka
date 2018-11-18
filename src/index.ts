@@ -77,9 +77,17 @@ export class Logger {
 
 	/* Private Instance Fields */
 
-	private readonly _ctxVarTest: RegExp = /[$%]{CTX:([^}]+)}/;
-	private readonly _envVarTest: RegExp = /[$%]{ENV:([^}]+)}/;
-	private readonly _escapedVar: RegExp = /\\([$%]){/g;
+	private readonly _regexDoubleQuote: RegExp = /"/g;
+	private readonly _regexNewLine: RegExp = /\n/g;
+	private readonly _regexReturn: RegExp = /\r/g;
+	private readonly _regexCtx: RegExp = /[$%]{CTX:([^}]+)}/;
+	private readonly _regexEnv: RegExp = /[$%]{ENV:([^}]+)}/;
+	private readonly _regexEscapedVar: RegExp = /\\([$%]){/g;
+	private readonly _regexEscapedSitkaVar: RegExp = /([$%])_SITKA_ESCAPED_VAR_{/g;
+	private readonly _regexLevel: RegExp = /[$%]\{LEVEL\}/g;
+	private readonly _regexMessage: RegExp = /[$%]\{MESSAGE\}/g;
+	private readonly _regexMessageQuoted: RegExp = /"[$%]\{MESSAGE\}"/;
+	private readonly _regexTimestamp: RegExp = /[$%]\{TIMESTAMP\}/g;
 	private _context: ILogContext;
 	private _format: string;
 	private _level: LogLevel;
@@ -103,7 +111,7 @@ export class Logger {
 					|| (this.getEnvVariable('LAMBDA_TASK_ROOT') || this.getEnvVariable('GCP_PROJECT')
 						? LogFormat.TEXT_NO_TIME : LogFormat.TEXT);
 		// Perform static replacements now so fewer are needed for each log entry. -- cwells
-		this._format = this._format.replace(this._escapedVar, '$1_SITKA_ESCAPED_VAR_{')
+		this._format = this._format.replace(this._regexEscapedVar, '$1_SITKA_ESCAPED_VAR_{')
 									.replace(/[$%]\{NAME\}/g, this._name);
 	}
 
@@ -191,21 +199,23 @@ export class Logger {
 
 	private log(level: string, message: any, ...args: any[]): any {
 		message = this.convertToString(message);
-		if (/"[$%]\{MESSAGE\}"/.test(this._format)) { // Message is inside quotes, so escape it. -- cwells
-			message = message.replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+		if (this._regexMessageQuoted.test(this._format)) { // Message is inside quotes, so escape it. -- cwells
+			message = message.replace(this._regexDoubleQuote, '\\"')
+								.replace(this._regexNewLine, '\\n')
+								.replace(this._regexReturn, '\\r');
 		}
-		message = this._format.replace(/[$%]\{LEVEL\}/g, level)
-					.replace(/[$%]\{TIMESTAMP\}/g, Date())
-					.replace(/[$%]\{MESSAGE\}/g, message.replace(this._escapedVar, '$1_SITKA_ESCAPED_VAR_{'));
+		message = this._format.replace(this._regexLevel, level)
+					.replace(this._regexTimestamp, Date())
+					.replace(this._regexMessage, message.replace(this._regexEscapedVar, '$1_SITKA_ESCAPED_VAR_{'));
 		// Replace ${ENV:VAR} and %{ENV:VAR} with the value of the VAR environment variable. -- cwells
-		let matches: RegExpMatchArray | null = message.match(this._envVarTest);
+		let matches: RegExpMatchArray | null = message.match(this._regexEnv);
 		while (matches && matches.length === 2) {
 			message = message.replace(matches[0], this.getEnvVariable(matches[1]));
-			matches = message.match(this._envVarTest);
+			matches = message.match(this._regexEnv);
 		}
 		// Replace ${CTX:VAR} and %{CTX:VAR} with the value of the VAR context variable. -- cwells
 		const context: ILogContext = { ...Logger._globalContext, ...this._context };
-		matches = message.match(this._ctxVarTest);
+		matches = message.match(this._regexCtx);
 		while (matches && matches.length === 2) {
 			let replacement: any;
 			if (context.hasOwnProperty(matches[1])) {
@@ -228,9 +238,9 @@ export class Logger {
 				}
 			}
 			message = message.replace(matches[0], replacement || '');
-			matches = message.match(this._ctxVarTest); // Repeat until no matches found. -- cwells
+			matches = message.match(this._regexCtx); // Repeat until no matches found. -- cwells
 		}
-		message = message.replace(/([$%])_SITKA_ESCAPED_VAR_{/g, '$1{');
+		message = message.replace(this._regexEscapedSitkaVar, '$1{');
 		if (level === 'FATAL' || level === 'ERROR') {
 			return (this._errorWriter || Logger._errorWriter)(message, ...args);
 		} else {
