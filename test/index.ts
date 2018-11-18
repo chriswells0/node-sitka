@@ -449,10 +449,10 @@ describe('Instance context variables', () => {
 			name: 'CTXStaticSetterMethods',
 		});
 		Logger.setGlobalContext(globalContext);
-		Logger.setGlobalContext('globalVar', 'globalValue');
-		Logger.setGlobalContext('globalVarObject', { 'test': 'value' });
+		Logger.setGlobalContext('gVar', 'globalValue');
+		Logger.setGlobalContext('obj', { val: 'value' });
 		const output: string[] = stdout.inspectSync(() => {
-			logger.info('${CTX:globalVar}, %{CTX:globalVar}, ${CTX:globalVarObject.test}, %{CTX:globalVarObject.test}, ${CTX:global.varOne}, %{CTX:global.varOne}');
+			logger.info('${CTX:gVar}, %{CTX:gVar}, ${CTX:obj.val}, %{CTX:obj.val}, ${CTX:global.varOne}, %{CTX:global.varOne}');
 		});
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal('globalValue, globalValue, value, value, globalValueOne, globalValueOne\n',
