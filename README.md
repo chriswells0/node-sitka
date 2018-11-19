@@ -91,6 +91,69 @@ Output:
 > [INFO] [MyLogger] ${CTX:myObj.myVar} = initial value\
 > [INFO] [MyLogger] ${CTX:myObj.myVar} = modified value
 
+3) AWS Lambda example with custom log formats:
+
+The global context stores values that are common to all logger instances and the local context stores values specific to a single logger.  This example allows us to log JSON objects that include the Lambda request ID in every log entry plus the function name for all event handlers and a private variable for one single class.
+
+To store the context and event parameters during every handler function execution:
+
+```typescript
+export const hello: Handler = (event: any, context: Context, callback: Callback) => {
+	Logger.setGlobalContext('handler', { context, event });
+	const logger: Logger = Logger.getLogger('Handler');
+	logger.trace('Entering hello()');
+	const greeter: Greeter = new Greeter();
+	// Rest of your code...
+};
+```
+
+Each class can also store its own `this` variable in its logger's local context to make private variables available to its log format setting:
+
+```typescript
+import { Logger } from 'sitka';
+
+export class Greeter {
+	private _greeting: string;
+	private _logger: Logger;
+
+	constructor(greeting?: string | null) {
+		this._greeting = (greeting ? greeting : 'Hello');
+		this._logger = Logger.getLogger({ name: this.constructor.name });
+		this._logger.setContext('local', this);
+		this._logger.trace('In constructor');
+	}
+}
+```
+
+The following environment variables would configure the desired log formats:
+
+```bash
+export LOG_FORMAT='{ "timestamp": "%{TIMESTAMP}", "level": "%{LEVEL}", "name": "%{NAME}", "message": "%{MESSAGE}", "requestId": "%{CTX:handler.context.awsRequestId}" }'
+export LOG_FORMAT_Greeter: '{ "timestamp": "%{TIMESTAMP}", "level": "%{LEVEL}", "name": "%{NAME}", "message": "%{MESSAGE}", "requestId": "%{CTX:handler.context.awsRequestId}", "greeting": "%{CTX:local._greeting}" }'
+export LOG_FORMAT_Handler: '{ "timestamp": "%{TIMESTAMP}", "level": "%{LEVEL}", "name": "%{NAME}", "message": "%{MESSAGE}", "requestId": "%{CTX:handler.context.awsRequestId}", "function": "%{ENV:AWS_LAMBDA_FUNCTION_NAME}" }'
+```
+
+Example log entries from executing the `hello` handler:
+
+> {
+> 	"timestamp": "Mon Nov 19 2018 04:24:30 GMT+0000 (UTC)",
+> 	"level": "TRACE",
+> 	"name": "Handler",
+> 	"message": "Entering hello()",
+> 	"requestId": "01ea0f31-ebb3-11e8-8a66-47627027db7e",
+> 	"function": "sitka-example-dev-hello"
+> }
+> {
+> 	"timestamp": "Mon Nov 19 2018 04:24:30 GMT+0000 (UTC)",
+> 	"level": "TRACE",
+> 	"name": "Greeter",
+> 	"message": "In constructor",
+> 	"requestId": "01ea0f31-ebb3-11e8-8a66-47627027db7e",
+> 	"greeting": "Hello"
+> }
+
+If you're sending your log entries to a system that accepts JSON, you can now search for all entries sharing the same request ID, see which handler started the execution, and add details from specific class instances on the fly.  While the custom log formats for the handler and class in this example would likely only be used when debugging, storing the handler's event and context parameters in Sitka's global context can be very useful in general.
+
 ## Configuration
 
 ### Global Configuration
