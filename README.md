@@ -135,21 +135,22 @@ export LOG_FORMAT_Handler: '{ "timestamp": "%{TIMESTAMP}", "level": "%{LEVEL}", 
 
 Example log entries from executing the `hello` handler:
 
-> {
-> 	"timestamp": "Mon Nov 19 2018 04:24:30 GMT+0000 (UTC)",
-> 	"level": "TRACE",
-> 	"name": "Handler",
-> 	"message": "Entering hello()",
-> 	"requestId": "01ea0f31-ebb3-11e8-8a66-47627027db7e",
-> 	"function": "sitka-example-dev-hello"
-> }
-> {
-> 	"timestamp": "Mon Nov 19 2018 04:24:30 GMT+0000 (UTC)",
-> 	"level": "TRACE",
-> 	"name": "Greeter",
-> 	"message": "In constructor",
-> 	"requestId": "01ea0f31-ebb3-11e8-8a66-47627027db7e",
-> 	"greeting": "Hello"
+
+> {\
+> 	"timestamp": "Mon Nov 19 2018 04:24:30 GMT+0000 (UTC)",\
+> 	"level": "TRACE",\
+> 	"name": "Handler",\
+> 	"message": "Entering hello()",\
+> 	"requestId": "01ea0f31-ebb3-11e8-8a66-47627027db7e",\
+> 	"function": "sitka-example-dev-hello"\
+> }\
+> {\
+> 	"timestamp": "Mon Nov 19 2018 04:24:30 GMT+0000 (UTC)",\
+> 	"level": "TRACE",\
+> 	"name": "Greeter",\
+> 	"message": "In constructor",\
+> 	"requestId": "01ea0f31-ebb3-11e8-8a66-47627027db7e",\
+> 	"greeting": "Hello"\
 > }
 
 If you're sending your log entries to a system that accepts JSON, you can now search for all entries sharing the same request ID, see which handler started the execution, and add details from specific class instances on the fly.  While the custom log formats for the handler and class in this example would likely only be used when debugging, storing the handler's event and context parameters in Sitka's global context can be very useful in general.
