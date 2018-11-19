@@ -93,12 +93,15 @@ Output:
 
 3) AWS Lambda example with custom log formats:
 
-The global context stores values that are common to all logger instances and the local context stores values specific to a single logger.  This example allows us to log JSON objects that include the Lambda request ID in every log entry plus the function name for all event handlers and a private variable for one single class.
+While this example will work in any app, it focuses on AWS Lambda to make it concrete.  It shows how to use Sitka to store application context and surface that data as needed through custom log formats.
 
-To store the context and event parameters during every handler function execution:
+Sitka's global context stores values that are common to all logger instances and the local context stores values specific to a single logger.  This example logs JSON objects that include the Lambda request ID in every log entry plus the function name for all event handlers and a private variable for one single class.
+
+To store the Lambda context and event parameters during every handler function execution:
 
 ```typescript
 export const hello: Handler = (event: any, context: Context, callback: Callback) => {
+	// Store 'handler' object (could use any name) with context and event properties:
 	Logger.setGlobalContext('handler', { context, event });
 	const logger: Logger = Logger.getLogger('Handler');
 	logger.trace('Entering hello()');
@@ -119,18 +122,19 @@ export class Greeter {
 	constructor(greeting?: string | null) {
 		this._greeting = (greeting ? greeting : 'Hello');
 		this._logger = Logger.getLogger({ name: this.constructor.name });
+		// Store 'this' as variable named 'local' (could use any name):
 		this._logger.setContext('local', this);
 		this._logger.trace('In constructor');
 	}
 }
 ```
 
-The following environment variables would configure the desired log formats:
+The following environment variables would configure the desired log formats (note references to `handler.context.awsRequestId` and `local._greeting`):
 
 ```bash
 export LOG_FORMAT='{ "timestamp": "%{TIMESTAMP}", "level": "%{LEVEL}", "name": "%{NAME}", "message": "%{MESSAGE}", "requestId": "%{CTX:handler.context.awsRequestId}" }'
-export LOG_FORMAT_Greeter: '{ "timestamp": "%{TIMESTAMP}", "level": "%{LEVEL}", "name": "%{NAME}", "message": "%{MESSAGE}", "requestId": "%{CTX:handler.context.awsRequestId}", "greeting": "%{CTX:local._greeting}" }'
-export LOG_FORMAT_Handler: '{ "timestamp": "%{TIMESTAMP}", "level": "%{LEVEL}", "name": "%{NAME}", "message": "%{MESSAGE}", "requestId": "%{CTX:handler.context.awsRequestId}", "function": "%{ENV:AWS_LAMBDA_FUNCTION_NAME}" }'
+export LOG_FORMAT_Greeter='{ "timestamp": "%{TIMESTAMP}", "level": "%{LEVEL}", "name": "%{NAME}", "message": "%{MESSAGE}", "requestId": "%{CTX:handler.context.awsRequestId}", "greeting": "%{CTX:local._greeting}" }'
+export LOG_FORMAT_Handler='{ "timestamp": "%{TIMESTAMP}", "level": "%{LEVEL}", "name": "%{NAME}", "message": "%{MESSAGE}", "requestId": "%{CTX:handler.context.awsRequestId}", "function": "%{ENV:AWS_LAMBDA_FUNCTION_NAME}" }'
 ```
 
 Example log entries from executing the `hello` handler:
@@ -153,7 +157,7 @@ Example log entries from executing the `hello` handler:
 > 	"greeting": "Hello"\
 > }
 
-If you're sending your log entries to a system that accepts JSON, you can now search for all entries sharing the same request ID, see which handler started the execution, and add details from specific class instances on the fly.  While the custom log formats for the handler and class in this example would likely only be used when debugging, storing the handler's event and context parameters in Sitka's global context can be very useful in general.
+If you're sending your log entries to a system that accepts JSON, you can now search for all entries sharing the same AWS request ID, see which handler acted as the entry point, and add details from specific class instances on the fly.  While the custom log formats for the handler and class in this example would likely only be used when debugging, storing the handler's event and context parameters in Sitka's global context can be very useful in general.
 
 ## Configuration
 
