@@ -1,3 +1,12 @@
+## [1.0.3](https://github.com/chriswells0/node-sitka/compare/v1.0.2...v1.0.3) (2019-02-03)
+
+
+### Bug Fixes
+
+* Update dependencies and upgrade ts-node to v8. ([9db3a94](https://github.com/chriswells0/node-sitka/commit/9db3a94)), closes [#7](https://github.com/chriswells0/node-sitka/issues/7)
+
+
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/chriswells0/node-sitka/compare/v1.0.1...v1.0.2) (2018-11-19)
 
