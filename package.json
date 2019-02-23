@@ -41,6 +41,7 @@
     "postversion": "git push && git push --tags",
     "prepare": "npm run build",
     "test": "mocha",
+    "upgrade": "npx npm-check -u",
     "version": "npm run build && npm run changelog"
   },
   "devDependencies": {
