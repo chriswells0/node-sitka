@@ -1,3 +1,12 @@
+## [1.0.4](https://github.com/chriswells0/node-sitka/compare/v1.0.3...v1.0.4) (2019-02-23)
+
+
+### Bug Fixes
+
+* Upgrade all dependencies to their latest versions. ([3e5f3e8](https://github.com/chriswells0/node-sitka/commit/3e5f3e8)), closes [#8](https://github.com/chriswells0/node-sitka/issues/8)
+
+
+
 ## [1.0.3](https://github.com/chriswells0/node-sitka/compare/v1.0.2...v1.0.3) (2019-02-03)
 
 
