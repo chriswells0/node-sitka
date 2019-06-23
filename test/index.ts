@@ -2,7 +2,7 @@
 
 import { expect } from 'chai';
 import * as testConsole from 'test-console';
-import { LogFormat, LogFunction, Logger, LogLevel } from '../src/index';
+import { LogFormat, LogFunction, Logger, LogLevel } from '../dist/index';
 
 const stdout = testConsole.stdout;
 const stderr = testConsole.stderr;
