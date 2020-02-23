@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.6",
+    "@types/mocha": "^7.0.1",
     "@types/node": "^13.1.0",
     "chai": "^4.2.0",
     "conventional-changelog-cli": "^2.0.12",
