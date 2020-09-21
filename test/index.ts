@@ -107,12 +107,46 @@ describe('Instance log level set by environment variable', () => {
 	});
 });
 
-describe('Predefined log formats', () => {
+describe('Instance date format set by environment variable', () => {
+	const mockIsoTime = '2020-09-20T18:29:24.727Z';
+	const mockEcmaTime = 'Sun Sep 20 2020 19:28:45 GMT+0000 (Coordinated Universal Time)';
+	let RealDate: any;
+	beforeEach(() => {
+		// Let's "spy" the Date to get the exact value
+		RealDate = Date;
+		Date = function (this: any) { if (this) this.toISOString = () => mockIsoTime; return mockEcmaTime; } as any;
+	})
+	afterEach(() => {
+		// Return Date to normal
+		Date = RealDate;
+		delete process.env.USE_ISO8601;
+	});
+	it('should produce ISO8601 date format', () => {
+		process.env.USE_ISO8601 = 'true';
+		const logger: Logger = Logger.getLogger({ name: 'InstanceEnvUseISO-true' });
+		const output: string[] = stdout.inspectSync(() => {
+			logger.info('Test message.');
+		});
+		expect(output).to.have.lengthOf(1, '1 line was logged');
+		expect(output[0]).to.equal(`[${mockIsoTime}] [INFO] [InstanceEnvUseISO-true] Test message.\n`, 'created the correct log entry');
+	});
+	it('should produce ECMA262 date format', () => {
+		process.env.USE_ISO8601 = 'false';
+		const logger: Logger = Logger.getLogger({ name: 'InstanceEnvUseISO-false' });
+		const output: string[] = stdout.inspectSync(() => {
+			logger.info('Test message.');
+		});
+		expect(output).to.have.lengthOf(1, '1 line was logged');
+		expect(output[0]).to.equal(`[${mockEcmaTime}] [INFO] [InstanceEnvUseISO-false] Test message.\n`, 'created the correct log entry');
+	});
+});
+
+describe('Predefined log formats (useISO8601==false)', () => {
 	it('should produce correct log entries when set to JSON', () => {
 		// Log message doesn't include milliseconds, so it's effectively rounded down.
 		// Take off 1 second to ensure the rounding doesn't lead to failures. -- cwells
 		const beforeLogEntry = Date.now() - 1000;
-		const logger: Logger = Logger.getLogger({ name: 'FormatJSON', format: LogFormat.JSON });
+		const logger: Logger = Logger.getLogger({ name: 'FormatJSON', format: LogFormat.JSON, useISO8601: false });
 		const output: string[] = stdout.inspectSync(() => {
 			logger.info('Test message.');
 		});
@@ -151,7 +185,7 @@ describe('Predefined log formats', () => {
 		// Log message doesn't include milliseconds, so it's effectively rounded down.
 		// Take off 1 second to ensure the rounding doesn't lead to failures. -- cwells
 		const beforeLogEntry: number = Date.now() - 1000;
-		const logger: Logger = Logger.getLogger({ name: 'FormatTEXT', format: LogFormat.TEXT });
+		const logger: Logger = Logger.getLogger({ name: 'FormatTEXT', format: LogFormat.TEXT, useISO8601: false });
 		const output: string[] = stdout.inspectSync(() => {
 			logger.info('Test message.');
 		});
@@ -176,6 +210,45 @@ describe('Predefined log formats', () => {
 		expect(output[0]).to.equal('[INFO] [FormatTEXT_NO_TIME] Test message.\n', 'created the correct log entry');
 	});
 });
+
+describe('Predefined log formats (useISO8601==true)', () => {
+	const mockTime = '2020-09-20T18:29:24.727Z';
+	let RealDate: any;
+	beforeEach(() => {
+		// Let's "spy" the Date to get the exact value
+		RealDate = Date;
+		Date = function (this: any) { if (this) this.toISOString = () => mockTime; return 'Date'; } as any;
+	})
+	afterEach(() =>
+		// Return Date to normal
+		Date = RealDate
+	);
+	it('should produce correct log entries when set to JSON', () => {
+		const logger: Logger = Logger.getLogger({ name: 'FormatJSON-useISO8601', format: LogFormat.JSON });
+		const output: string[] = stdout.inspectSync(() => {
+			logger.info('Test message.');
+		});
+		expect(output).to.have.lengthOf(1, '1 line was logged');
+		let jsonRecord;
+		try {
+			jsonRecord = JSON.parse(output[0]);
+		} catch (ex) { /* Do nothing. */ }
+		expect(jsonRecord, 'is valid JSON').to.exist; // tslint:disable-line:no-unused-expression
+		expect(jsonRecord).to.have.property('level', 'INFO', 'includes the correct log level');
+		expect(jsonRecord).to.have.property('message', 'Test message.', 'includes the correct log message');
+		expect(jsonRecord).to.have.property('name', 'FormatJSON-useISO8601', 'includes the correct log name');
+		expect(jsonRecord).to.have.property('timestamp', mockTime, 'includes the correct timestamp');
+	});
+	it('should produce correct log entries when set to TEXT', () => {
+		const logger: Logger = Logger.getLogger({ name: 'FormatTEXT-useISO8601', format: LogFormat.TEXT });
+		const output: string[] = stdout.inspectSync(() => {
+			logger.info('Test message.');
+		});
+		expect(output).to.have.lengthOf(1, '1 line was logged');
+		expect(output[0]).to.equal(`[${mockTime}] [INFO] [FormatTEXT-useISO8601] Test message.\n`, 'created the correct log entry');
+	});
+});
+
 
 describe('Log format', () => {
 	it('should be modified by the config parameter', () => {
@@ -296,21 +369,21 @@ describe('Environment variables', () => {
 
 describe('Instance context variables', () => {
 	const globalContext = {
-			contextScopeTest: 'globalContextTestValue',
-			global: {
-				varOne: 'globalValueOne',
-			},
-		};
+		contextScopeTest: 'globalContextTestValue',
+		global: {
+			varOne: 'globalValueOne',
+		},
+	};
 	const localContext = {
-			arrayVar: [1, 2, 3],
-			contextScopeTest: 'localContextTestValue',
-			local: {
-				nullVar: null,
-				subObject: { testProp: true },
-				undefVar: undefined,
-				varOne: 'localValueOne',
-			},
-		};
+		arrayVar: [1, 2, 3],
+		contextScopeTest: 'localContextTestValue',
+		local: {
+			nullVar: null,
+			subObject: { testProp: true },
+			undefVar: undefined,
+			varOne: 'localValueOne',
+		},
+	};
 	it('should be substituted in the log format', () => {
 		const logger: Logger = Logger.getLogger({
 			context: localContext,
@@ -322,7 +395,7 @@ describe('Instance context variables', () => {
 		});
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal('localContextTestValue, localContextTestValue, localValueOne, localValueOne\n',
-									'created the correct log entry');
+			'created the correct log entry');
 	});
 	it('should be escapable in the log format', () => {
 		const logger: Logger = Logger.getLogger({
@@ -349,7 +422,7 @@ describe('Instance context variables', () => {
 		});
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal('localContextTestValue, localContextTestValue, localValueOne, localValueOne\n',
-									'created the correct log entry');
+			'created the correct log entry');
 	});
 	it('should be escapable in the log message', () => {
 		const logger: Logger = Logger.getLogger({
@@ -456,7 +529,7 @@ describe('Instance context variables', () => {
 		});
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal('globalValue, globalValue, value, value, globalValueOne, globalValueOne\n',
-									'created the correct log entry');
+			'created the correct log entry');
 	});
 	it('should allow setting the context with instance methods', () => {
 		const logger: Logger = Logger.getLogger({
@@ -470,7 +543,7 @@ describe('Instance context variables', () => {
 		});
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal('localVarValue, localVarValue, localValueOne, localValueOne\n',
-									'created the correct log entry');
+			'created the correct log entry');
 	});
 	it('should overwrite the global context with the local context', () => {
 		const logger: Logger = Logger.getLogger({

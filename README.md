@@ -181,6 +181,7 @@ The following configuration properties are available:
 | context          | Variables that can be referenced in log messages for a specific logger   | {}                                                   | instance method, constructor        |
 | errorWriter      | Function for writing log messages at FATAL or ERROR levels               | console.error()                                      | constructor, static method          |
 | logWriter        | Function for writing log messages at any level other than FATAL or ERROR | console.log()                                        | constructor, static method          |
+| useISO8601       | true: TIMESTAMP uses [ISO8601][iso8601] date format, false: it uses [ECMA262][ecma262] date format. | true                      | constructor                         |
 
 Note that the timestamp is automatically omitted from the default log format when Sitka detects an AWS Lambda or Google Cloud environment since they add their own timestamp prefix.
 
@@ -204,7 +205,7 @@ Both the log format and log messages may contain the following variables using t
 * `LEVEL`: The log level for this log entry
 * `MESSAGE`: The provided log message
 * `NAME`: The name of the current logger (only available in log format)
-* `TIMESTAMP`: Date and time the entry was logged
+* `TIMESTAMP`: Date and time the entry was logged (its value depends on `useISO8601` config property)
 * `CTX:VAR_NAME`: Value of the VAR_NAME property from the log context
 * `ENV:VAR_NAME`: The value of the VAR_NAME environment variable
 
@@ -231,6 +232,9 @@ export LOG_FORMAT='[${TIMESTAMP}] [${LEVEL}] [${NAME}] ${MESSAGE}'
 
 # Specify a different log format for the logger named MyLogger:
 export LOG_FORMAT_MyLogger='[${TIMESTAMP}] [${LEVEL}] [${NAME}] [${ENV:AWS_REGION}] ${MESSAGE}'
+
+# Specify if the default date format for TIMESTAMP will be ISO8601 (true) or ECMA262 (false):
+export USE_ISO8601='false'
 ```
 
 While the `LOG_LEVEL` environment variable doesn't need the `Logger.Level.` prefix as used in code, it can be used if preferred. In either case, the value must be present in the `Logger.Level` enum for it to take effect.
@@ -267,3 +271,5 @@ Sitka aims to remain lightweight with a focus on simple flexibility over complex
 [dependencies-url]: https://david-dm.org/chriswells0/node-sitka
 [dev-dependencies-image]: https://david-dm.org/chriswells0/node-sitka/dev-status.svg
 [dev-dependencies-url]: https://david-dm.org/chriswells0/node-sitka?type=dev
+[ecma262]: https://www.ecma-international.org/ecma-262/#sec-date.prototype.tostring
+[iso8601]: https://www.iso.org/iso-8601-date-and-time-format.html

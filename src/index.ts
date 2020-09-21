@@ -11,6 +11,7 @@ interface ILogConfig {
 	level?: LogLevel;
 	logWriter?: LogFunction;
 	name?: string;
+	useISO8601?: boolean;
 }
 
 interface ILogConfigWithName extends ILogConfig { name: string; }
@@ -94,6 +95,7 @@ export class Logger {
 	private _name: string;
 	private _logWriter: LogFunction | undefined;
 	private _errorWriter: LogFunction | undefined;
+	private _useISO8601: boolean;
 
 	/* Constructor */
 
@@ -113,6 +115,12 @@ export class Logger {
 		// Perform static replacements now so fewer are needed for each log entry. -- cwells
 		this._format = this._format.replace(this._regexEscapedVar, '$1_SITKA_ESCAPED_VAR_{')
 									.replace(/[$%]\{NAME\}/g, this._name);
+		const envUseISO8601 = this.getEnvVariable('USE_ISO8601', true);
+		this._useISO8601 = typeof config.useISO8601 === 'boolean'
+						? config.useISO8601
+						: ['true', 'false'].includes(envUseISO8601)
+							? envUseISO8601 === 'true'
+							: true;
 	}
 
 	/* Public Instance Methods */
@@ -204,8 +212,9 @@ export class Logger {
 								.replace(this._regexNewLine, '\\n')
 								.replace(this._regexReturn, '\\r');
 		}
+		const timestamp = this._useISO8601? new Date().toISOString(): Date();
 		message = this._format.replace(this._regexLevel, level)
-					.replace(this._regexTimestamp, Date())
+					.replace(this._regexTimestamp, timestamp)
 					.replace(this._regexMessage, message.replace(this._regexEscapedVar, '$1_SITKA_ESCAPED_VAR_{'));
 		// Replace ${ENV:VAR} and %{ENV:VAR} with the value of the VAR environment variable. -- cwells
 		let matches: RegExpMatchArray | null = message.match(this._regexEnv);
