@@ -1,13 +1,13 @@
 language: node_js
 node_js:
-  - "10"
-  - "12"
-  - "13"
+  # https://nodejs.org/en/about/releases/
+  - "12" # 2022-04-30
+  - "14" # 2023-04-30
+  - "15" # 2021-06-01
+  - "16" # 2024-04-30
 install:
   - npm install
 script:
   - npm run cover:check
-# Node 6 doesn't run prepare after install:
-before_script: "npm run build"
 # Send test coverage data to Coveralls:
 after_script: "npm run coveralls"
