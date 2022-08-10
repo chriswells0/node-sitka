@@ -74,35 +74,65 @@ describe('Log level passed to constructor', () => {
 });
 
 describe('Global log level set by environment variable', () => {
+	let oldEnv: any;
+	beforeEach(() => oldEnv = { ...process.env });
+	afterEach(() => process.env = oldEnv);
 	forEveryLogLevel((level: keyof typeof LogLevel, method: LogFunction | null) => {
-		it('should produce correct log entries when log level is ' + level, () => {
+		it('should produce correct log entries when LOG_LEVEL is ' + level, () => {
 			const logName: string = 'GlobalEnvLogLevel' + LogLevel[level]; // Must be the number. -- cwells
-			const oldLogLevel = process.env.LOG_LEVEL;
 			process.env.LOG_LEVEL = level;
 			const logger: Logger = Logger.getLogger({ name: logName });
 			checkOutputAtLogLevel(logger, LogLevel[level]);
-			if (oldLogLevel) {
-				process.env.LOG_LEVEL = oldLogLevel;
-			} else {
-				delete process.env.LOG_LEVEL;
-			}
+		});
+	});
+
+	forEveryLogLevel((level: keyof typeof LogLevel, method: LogFunction | null) => {
+		it('should produce correct log entries when SITKA_LEVEL is ' + level, () => {
+			const logName: string = 'GlobalEnvLogLevel' + LogLevel[level]; // Must be the number. -- cwells
+			process.env.SITKA_LEVEL = level;
+			const logger: Logger = Logger.getLogger({ name: logName });
+			checkOutputAtLogLevel(logger, LogLevel[level]);
+		});
+	});
+
+	forEveryLogLevel((level: keyof typeof LogLevel, method: LogFunction | null) => {
+		it('should prioritize SITKA_LEVEL over LOG_LEVEL with ' + level, () => {
+			const logName: string = 'GlobalEnvLogLevel' + LogLevel[level]; // Must be the number. -- cwells
+			process.env.SITKA_LEVEL = level;
+			process.env.LOG_LEVEL = 'OFF';
+			const logger: Logger = Logger.getLogger({ name: logName });
+			checkOutputAtLogLevel(logger, LogLevel[level]);
 		});
 	});
 });
 
 describe('Instance log level set by environment variable', () => {
+	let oldEnv: any;
+	beforeEach(() => oldEnv = { ...process.env });
+	afterEach(() => process.env = oldEnv);
 	forEveryLogLevel((level: keyof typeof LogLevel, method: LogFunction | null) => {
-		it('should produce correct log entries when log level is ' + level, () => {
+		it('should produce correct log entries when LOG_LEVEL is ' + level, () => {
 			const logName: string = 'InstanceEnvLogLevel' + LogLevel[level]; // Must be the number. -- cwells
-			const oldLogLevel = process.env['LOG_LEVEL_' + logName];
 			process.env['LOG_LEVEL_' + logName] = level;
 			const logger: Logger = Logger.getLogger({ name: logName });
 			checkOutputAtLogLevel(logger, LogLevel[level]);
-			if (oldLogLevel) {
-				process.env['LOG_LEVEL_' + logName] = oldLogLevel;
-			} else {
-				delete process.env['LOG_LEVEL_' + logName];
-			}
+		});
+	});
+	forEveryLogLevel((level: keyof typeof LogLevel, method: LogFunction | null) => {
+		it('should produce correct log entries when SITKA_LEVEL is ' + level, () => {
+			const logName: string = 'InstanceEnvLogLevel' + LogLevel[level]; // Must be the number. -- cwells
+			process.env['SITKA_LEVEL_' + logName] = level;
+			const logger: Logger = Logger.getLogger({ name: logName });
+			checkOutputAtLogLevel(logger, LogLevel[level]);
+		});
+	});
+	forEveryLogLevel((level: keyof typeof LogLevel, method: LogFunction | null) => {
+		it('should prioritize SITKA_LEVEL over LOG_LEVEL on ' + level, () => {
+			const logName: string = 'InstanceEnvLogLevel' + LogLevel[level]; // Must be the number. -- cwells
+			process.env['SITKA_LEVEL_' + logName] = level;
+			process.env['LOG_LEVEL_' + logName] = 'OFF';
+			const logger: Logger = Logger.getLogger({ name: logName });
+			checkOutputAtLogLevel(logger, LogLevel[level]);
 		});
 	});
 });
@@ -111,17 +141,20 @@ describe('Instance date format set by environment variable', () => {
 	const mockIsoTime = '2020-09-20T18:29:24.727Z';
 	const mockEcmaTime = 'Sun Sep 20 2020 19:28:45 GMT+0000 (Coordinated Universal Time)';
 	let RealDate: any;
+	let oldEnv: any;
+
 	beforeEach(() => {
 		// Let's "spy" the Date to get the exact value
 		RealDate = Date;
 		Date = function (this: any) { if (this) this.toISOString = () => mockIsoTime; return mockEcmaTime; } as any;
+		oldEnv = { ...process.env }
 	})
 	afterEach(() => {
 		// Return Date to normal
 		Date = RealDate;
-		delete process.env.USE_ISO8601;
+		process.env = oldEnv;
 	});
-	it('should produce ISO8601 date format', () => {
+	it('should produce ISO8601 date format when USE_ISO8601==true', () => {
 		process.env.USE_ISO8601 = 'true';
 		const logger: Logger = Logger.getLogger({ name: 'InstanceEnvUseISO-true' });
 		const output: string[] = stdout.inspectSync(() => {
@@ -130,8 +163,26 @@ describe('Instance date format set by environment variable', () => {
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal(`[${mockIsoTime}] [INFO] [InstanceEnvUseISO-true] Test message.\n`, 'created the correct log entry');
 	});
-	it('should produce ECMA262 date format', () => {
+	it('should produce ECMA262 date format when USE_ISO8601==false', () => {
 		process.env.USE_ISO8601 = 'false';
+		const logger: Logger = Logger.getLogger({ name: 'InstanceEnvUseISO-false' });
+		const output: string[] = stdout.inspectSync(() => {
+			logger.info('Test message.');
+		});
+		expect(output).to.have.lengthOf(1, '1 line was logged');
+		expect(output[0]).to.equal(`[${mockEcmaTime}] [INFO] [InstanceEnvUseISO-false] Test message.\n`, 'created the correct log entry');
+	});
+	it('should produce ISO8601 date format when SITKA_ISO8601==true', () => {
+		process.env.SITKA_ISO8601 = 'true';
+		const logger: Logger = Logger.getLogger({ name: 'InstanceEnvUseISO-true' });
+		const output: string[] = stdout.inspectSync(() => {
+			logger.info('Test message.');
+		});
+		expect(output).to.have.lengthOf(1, '1 line was logged');
+		expect(output[0]).to.equal(`[${mockIsoTime}] [INFO] [InstanceEnvUseISO-true] Test message.\n`, 'created the correct log entry');
+	});
+	it('should produce ECMA262 date format when SITKA_ISO8601==false', () => {
+		process.env.SITKA_ISO8601 = 'false';
 		const logger: Logger = Logger.getLogger({ name: 'InstanceEnvUseISO-false' });
 		const output: string[] = stdout.inspectSync(() => {
 			logger.info('Test message.');
@@ -251,6 +302,9 @@ describe('Predefined log formats (useISO8601==true)', () => {
 
 
 describe('Log format', () => {
+	let oldEnv: any;
+	beforeEach(() => oldEnv = { ...process.env });
+	afterEach(() => process.env = oldEnv);
 	it('should be modified by the config parameter', () => {
 		const logger: Logger = Logger.getLogger({ name: 'FormatConfig', format: 'Config: ${MESSAGE}' });
 		const output: string[] = stdout.inspectSync(() => {
@@ -259,48 +313,48 @@ describe('Log format', () => {
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal('Config: Test message.\n', 'created the correct log entry');
 	});
-	it('should be modified by a global environment variable', () => {
+	it('should be modified by a global LOG_FORMAT environment variable', () => {
 		const output: string[] = stdout.inspectSync(() => {
-			const oldLogFormat = process.env.LOG_FORMAT;
 			process.env.LOG_FORMAT = 'Global ENV: ${MESSAGE}';
 			const logger: Logger = Logger.getLogger({ name: 'FormatGlobalEnv' });
 			logger.info('Test message.');
-			if (oldLogFormat) {
-				process.env.LOG_FORMAT = oldLogFormat;
-			} else {
-				delete process.env.LOG_FORMAT;
-			}
 		});
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal('Global ENV: Test message.\n', 'created the correct log entry');
 	});
-	it('should be modified by an instance environment variable', () => {
+	it('should be modified by an instance LOG_FORMAT environment variable', () => {
 		const output: string[] = stdout.inspectSync(() => {
-			const oldLogFormat = process.env.LOG_FORMAT_FormatInstanceEnv;
 			process.env.LOG_FORMAT_FormatInstanceEnv = 'Instance ENV: ${MESSAGE}';
 			const logger: Logger = Logger.getLogger({ name: 'FormatInstanceEnv' });
 			logger.info('Test message.');
-			if (oldLogFormat) {
-				process.env.LOG_FORMAT_FormatInstanceEnv = oldLogFormat;
-			} else {
-				delete process.env.LOG_FORMAT_FormatInstanceEnv;
-			}
+		});
+		expect(output).to.have.lengthOf(1, '1 line was logged');
+		expect(output[0]).to.equal('Instance ENV: Test message.\n', 'created the correct log entry');
+	});
+	it('should be modified by a global SITKA_FORMAT environment variable', () => {
+		const output: string[] = stdout.inspectSync(() => {
+			process.env.SITKA_FORMAT = 'Global ENV: ${MESSAGE}';
+			const logger: Logger = Logger.getLogger({ name: 'FormatGlobalEnv' });
+			logger.info('Test message.');
+		});
+		expect(output).to.have.lengthOf(1, '1 line was logged');
+		expect(output[0]).to.equal('Global ENV: Test message.\n', 'created the correct log entry');
+	});
+	it('should be modified by an instance SITKA_FORMAT environment variable', () => {
+		const output: string[] = stdout.inspectSync(() => {
+			process.env.SITKA_FORMAT_FormatInstanceEnv = 'Instance ENV: ${MESSAGE}';
+			const logger: Logger = Logger.getLogger({ name: 'FormatInstanceEnv' });
+			logger.info('Test message.');
 		});
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal('Instance ENV: Test message.\n', 'created the correct log entry');
 	});
 	it('should default to TEXT_NO_TIME on AWS Lambda', () => {
-		const oldLambda = process.env.LAMBDA_TASK_ROOT;
 		process.env.LAMBDA_TASK_ROOT = 'valueDoesNotMatter';
 		const logger: Logger = Logger.getLogger({ name: 'FormatLambda' });
 		const output: string[] = stdout.inspectSync(() => {
 			logger.info('Test message.');
 		});
-		if (oldLambda) {
-			process.env.LAMBDA_TASK_ROOT = oldLambda;
-		} else {
-			delete process.env.LAMBDA_TASK_ROOT;
-		}
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal('[INFO] [FormatLambda] Test message.\n', 'created the correct log entry');
 	});
