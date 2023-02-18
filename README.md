@@ -218,7 +218,9 @@ While you can always use a custom string for the format, several constants are p
 
 ### Environment Variables
 
-The log level and format can be controlled globally as well as for individual loggers using environment variables:
+The log level, format, and date format can be controlled globally as well as for individual loggers using environment variables `LOG_LEVEL`, `LOG_FORMAT`, and `USE_ISO8601`. However, in environments where 
+these variables interfere with other npm packages or systems, the `SITKA_LEVEL`, `SITKA_FORMAT`, 
+and `SITKA_ISO8601` can be used.
 
 ```bash
 # Only log ERROR and higher level messages:
