@@ -266,7 +266,7 @@ Sitka aims to remain lightweight with a focus on simple flexibility over complex
 [issues-image]: https://img.shields.io/github/issues/chriswells0/node-sitka.svg?style=popout
 [issues-url]: https://github.com/chriswells0/node-sitka/issues
 [build-image]: https://img.shields.io/github/actions/workflow/status/chriswells0/node-sitka/ci-build.yaml?branch=master
-<!-- [build-url]: https://travis-ci.com/chriswells0/node-sitka -->
+[build-url]: https://github.com/chriswells0/node-sitka/actions/workflows/ci-build.yaml
 [coverage-image]: https://coveralls.io/repos/github/chriswells0/node-sitka/badge.svg?branch=master
 [coverage-url]: https://coveralls.io/github/chriswells0/node-sitka?branch=master
 [dependencies-image]: https://david-dm.org/chriswells0/node-sitka/status.svg
