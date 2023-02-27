@@ -102,9 +102,8 @@ export class Logger {
 	private constructor(config: ILogConfigWithName) {
 		this._name = config.name;
 		this._context = config.context || {};
-		const envLogLevel: string = (
-					   this.getEnvVariable('SITKA_LEVEL', true) 
-					|| this.getEnvVariable('LOG_LEVEL', true)).replace(/Log(ger\.)?Level\./, '');
+		const envLogLevel: string = (this.getEnvVariable('SITKA_LEVEL', true)
+									|| this.getEnvVariable('LOG_LEVEL', true)).replace(/Log(ger\.)?Level\./, '');
 		this._level = config.level
 					|| (LogLevel.hasOwnProperty(envLogLevel) && LogLevel[envLogLevel as keyof typeof LogLevel])
 					|| LogLevel.ALL;
@@ -118,9 +117,8 @@ export class Logger {
 		// Perform static replacements now so fewer are needed for each log entry. -- cwells
 		this._format = this._format.replace(this._regexEscapedVar, '$1_SITKA_ESCAPED_VAR_{')
 									.replace(/[$%]\{NAME\}/g, this._name);
-		const envUseISO8601 = 
-					   this.getEnvVariable('SITKA_ISO8601', true)
-					|| this.getEnvVariable('USE_ISO8601', true);
+		const envUseISO8601 = this.getEnvVariable('SITKA_ISO8601', true)
+							|| this.getEnvVariable('USE_ISO8601', true);
 		this._useISO8601 = envUseISO8601 !== 'false';
 	}
 
