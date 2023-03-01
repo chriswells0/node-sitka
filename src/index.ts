@@ -1,8 +1,8 @@
 'use strict';
 
-export type LogFunction = (...args: any[]) => any;
+export type LogFunction = (...args: any[]) => any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-interface ILogContext { [key: string]: any; }
+interface ILogContext { [key: string]: any; } // eslint-disable-line @typescript-eslint/no-explicit-any
 
 interface ILogConfig {
 	context?: ILogContext;
@@ -47,7 +47,7 @@ export class Logger {
 			config = { name: config };
 		}
 		config.name = config.name || 'Sitka';
-		if (!this._loggers.hasOwnProperty(config.name)) {
+		if (!Object.prototype.hasOwnProperty.call(this._loggers, config.name)) {
 			this._loggers[config.name] = new Logger(config as ILogConfigWithName);
 		}
 		return this._loggers[config.name];
@@ -57,6 +57,7 @@ export class Logger {
 		this._errorWriter = errorWriter;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public static setGlobalContext(context: ILogContext | string, value?: any): void {
 		if (typeof context === 'string') {
 			this._globalContext[context] = value;
@@ -73,8 +74,8 @@ export class Logger {
 
 	private static _globalContext: ILogContext = {};
 	private static _loggers: { [name: string]: Logger } = {};
-	private static _logWriter: LogFunction = console.log; // tslint:disable-line:no-console
-	private static _errorWriter: LogFunction = console.error; // tslint:disable-line:no-console
+	private static _logWriter: LogFunction = console.log; // eslint-disable-line no-console
+	private static _errorWriter: LogFunction = console.error; // eslint-disable-line no-console
 
 	/* Private Instance Fields */
 
@@ -105,7 +106,7 @@ export class Logger {
 		const envLogLevel: string = (this.getEnvVariable('SITKA_LEVEL', true)
 									|| this.getEnvVariable('LOG_LEVEL', true)).replace(/Log(ger\.)?Level\./, '');
 		this._level = config.level
-					|| (LogLevel.hasOwnProperty(envLogLevel) && LogLevel[envLogLevel as keyof typeof LogLevel])
+					|| (Object.prototype.hasOwnProperty.call(LogLevel, envLogLevel) && LogLevel[envLogLevel as keyof typeof LogLevel])
 					|| LogLevel.ALL;
 		this._logWriter = config.logWriter || undefined;
 		this._errorWriter = config.errorWriter || undefined;
@@ -116,7 +117,7 @@ export class Logger {
 						? LogFormat.TEXT_NO_TIME : LogFormat.TEXT);
 		// Perform static replacements now so fewer are needed for each log entry. -- cwells
 		this._format = this._format.replace(this._regexEscapedVar, '$1_SITKA_ESCAPED_VAR_{')
-									.replace(/[$%]\{NAME\}/g, this._name);
+			.replace(/[$%]\{NAME\}/g, this._name);
 		const envUseISO8601 = this.getEnvVariable('SITKA_ISO8601', true)
 							|| this.getEnvVariable('USE_ISO8601', true);
 		this._useISO8601 = envUseISO8601 !== 'false';
@@ -124,22 +125,23 @@ export class Logger {
 
 	/* Public Instance Methods */
 
-	public debug(message: any, ...args: any[]): any {
+	public debug(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
 		return (this._level >= LogLevel.DEBUG ? this.log('DEBUG', message, ...args) : false);
 	}
 
-	public error(message: any, ...args: any[]): any {
+	public error(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
 		return (this._level >= LogLevel.ERROR ? this.log('ERROR', message, ...args) : false);
 	}
 
-	public fatal(message: any, ...args: any[]): any {
+	public fatal(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
 		return (this._level >= LogLevel.FATAL ? this.log('FATAL', message, ...args) : false);
 	}
 
-	public info(message: any, ...args: any[]): any {
+	public info(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
 		return (this._level >= LogLevel.INFO ? this.log('INFO', message, ...args) : false);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public setContext(context: ILogContext | string, value?: any): void {
 		if (typeof context === 'string') {
 			this._context[context] = value;
@@ -148,17 +150,17 @@ export class Logger {
 		}
 	}
 
-	public trace(message: any, ...args: any[]): any {
+	public trace(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
 		return (this._level >= LogLevel.TRACE ? this.log('TRACE', message, ...args) : false);
 	}
 
-	public warn(message: any, ...args: any[]): any {
+	public warn(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
 		return (this._level >= LogLevel.WARN ? this.log('WARN', message, ...args) : false);
 	}
 
 	/* Private Instance Methods */
 
-	private convertToString(item: any): string {
+	private convertToString(item: any): string { // eslint-disable-line @typescript-eslint/no-explicit-any
 		if (typeof item === 'undefined') {
 			return 'undefined';
 		} else if (item === null) {
@@ -192,29 +194,29 @@ export class Logger {
 		}
 	}
 
-	private getEnvVariable(property: string, checkCustom: boolean = false): string {
+	private getEnvVariable(property: string, checkCustom = false): string {
 		// The keys check allows unit tests to succeed with env overwritten. -- cwells
 		if (process && process.env && Object.keys(process.env).length !== 0) {
-			if (checkCustom && process.env.hasOwnProperty(property + '_' + this._name)) {
+			if (checkCustom && Object.prototype.hasOwnProperty.call(process.env, property + '_' + this._name)) {
 				return process.env[property + '_' + this._name] as string;
-			} else if (process.env.hasOwnProperty(property)) {
+			} else if (Object.prototype.hasOwnProperty.call(process.env, property)) {
 				return process.env[property] as string;
 			}
 		}
 		return '';
 	}
 
-	private log(level: string, message: any, ...args: any[]): any {
+	private log(level: string, message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
 		message = this.convertToString(message);
 		if (this._regexMessageQuoted.test(this._format)) { // Message is inside quotes, so escape it. -- cwells
 			message = message.replace(this._regexDoubleQuote, '\\"')
-								.replace(this._regexNewLine, '\\n')
-								.replace(this._regexReturn, '\\r');
+				.replace(this._regexNewLine, '\\n')
+				.replace(this._regexReturn, '\\r');
 		}
-		const timestamp = this._useISO8601? new Date().toISOString(): Date();
+		const timestamp = this._useISO8601 ? new Date().toISOString() : Date();
 		message = this._format.replace(this._regexLevel, level)
-					.replace(this._regexTimestamp, timestamp)
-					.replace(this._regexMessage, message.replace(this._regexEscapedVar, '$1_SITKA_ESCAPED_VAR_{'));
+			.replace(this._regexTimestamp, timestamp)
+			.replace(this._regexMessage, message.replace(this._regexEscapedVar, '$1_SITKA_ESCAPED_VAR_{'));
 		// Replace ${ENV:VAR} and %{ENV:VAR} with the value of the VAR environment variable. -- cwells
 		let matches: RegExpMatchArray | null = message.match(this._regexEnv);
 		while (matches && matches.length === 2) {
@@ -225,16 +227,16 @@ export class Logger {
 		const context: ILogContext = { ...Logger._globalContext, ...this._context };
 		matches = message.match(this._regexCtx);
 		while (matches && matches.length === 2) {
-			let replacement: any;
-			if (context.hasOwnProperty(matches[1])) {
+			let replacement = '';
+			if (Object.prototype.hasOwnProperty.call(context, matches[1])) {
 				replacement = this.convertToString(context[matches[1]]);
 			} else { // Attempt to convert dotted vars into object property references. -- cwells
 				const propNames: string[] = matches[1].split('.');
 				if (propNames.length !== 1) {
-					let ctxVar: any = context;
+					let ctxVar: ILogContext = context;
 					let i: number;
 					for (i = 0; i < propNames.length; i++) {
-						if (!ctxVar.hasOwnProperty(propNames[i])) {
+						if (!Object.prototype.hasOwnProperty.call(ctxVar, propNames[i])) {
 							i--; // Decrement i to the last successful match. -- cwells
 							break;
 						}
@@ -245,7 +247,7 @@ export class Logger {
 					}
 				}
 			}
-			message = message.replace(matches[0], replacement || '');
+			message = message.replace(matches[0], replacement);
 			matches = message.match(this._regexCtx); // Repeat until no matches found. -- cwells
 		}
 		message = message.replace(this._regexEscapedSitkaVar, '$1{');
