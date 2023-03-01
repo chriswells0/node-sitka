@@ -1,11 +1,11 @@
 # Sitka
 
 [![Package Version][package-image]][package-url]
-[![Open Issues][issues-image]][issues-url]
+[![Monthly Downloads][downloads-image]][package-url]
+[![Dependencies Status][dependencies-image]][dependencies-url]
 [![Build Status][build-image]][build-url]
 [![Coverage Status][coverage-image]][coverage-url]
-[![Dependencies Status][dependencies-image]][dependencies-url]
-[![Dev Dependencies Status][dev-dependencies-image]][dev-dependencies-url]
+[![Open Issues][issues-image]][issues-url]
 
 An extremely lightweight but powerful Node.js logger that's great for modern cloud/serverless applications.
 
@@ -261,17 +261,16 @@ Read what people are saying about Sitka:
 
 Sitka aims to remain lightweight with a focus on simple flexibility over complex features.  PRs are very welcome for bug fixes. Before writing any code for an additional feature, please submit a PR describing the intended change to determine whether the feature would be considered.
 
-[package-image]: https://badge.fury.io/js/sitka.svg
-[package-url]: https://badge.fury.io/js/sitka
-[issues-image]: https://img.shields.io/github/issues/chriswells0/node-sitka.svg?style=popout
-[issues-url]: https://github.com/chriswells0/node-sitka/issues
 [build-image]: https://img.shields.io/github/actions/workflow/status/chriswells0/node-sitka/ci-build.yaml?branch=master
 [build-url]: https://github.com/chriswells0/node-sitka/actions/workflows/ci-build.yaml
 [coverage-image]: https://coveralls.io/repos/github/chriswells0/node-sitka/badge.svg?branch=master
 [coverage-url]: https://coveralls.io/github/chriswells0/node-sitka?branch=master
-[dependencies-image]: https://david-dm.org/chriswells0/node-sitka/status.svg
-[dependencies-url]: https://david-dm.org/chriswells0/node-sitka
-[dev-dependencies-image]: https://david-dm.org/chriswells0/node-sitka/dev-status.svg
-[dev-dependencies-url]: https://david-dm.org/chriswells0/node-sitka?type=dev
+[dependencies-image]: https://img.shields.io/badge/dependencies-none-success
+[dependencies-url]: https://www.npmjs.com/package/sitka?activeTab=dependencies
+[downloads-image]: https://img.shields.io/npm/dm/sitka
+[issues-image]: https://img.shields.io/github/issues/chriswells0/node-sitka.svg?style=popout
+[issues-url]: https://github.com/chriswells0/node-sitka/issues
+[package-image]: https://img.shields.io/npm/v/sitka
+[package-url]: https://www.npmjs.com/package/sitka
 [ecma262]: https://www.ecma-international.org/ecma-262/#sec-date.prototype.tostring
 [iso8601]: https://www.iso.org/iso-8601-date-and-time-format.html
