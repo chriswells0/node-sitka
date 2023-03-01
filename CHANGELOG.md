@@ -1,3 +1,12 @@
+## [1.0.6](https://github.com/chriswells0/node-sitka/compare/v1.0.5...v1.0.6) (2023-03-01)
+
+
+### Bug Fixes
+
+* Make NPM run scripts compatible with Windows. ([04acd1d](https://github.com/chriswells0/node-sitka/commit/04acd1dc7a8cbe7c61b0d8a39df19e79336c94f6)), closes [#11](https://github.com/chriswells0/node-sitka/issues/11)
+
+
+
 ## [1.0.5](https://github.com/chriswells0/node-sitka/compare/v1.0.4...v1.0.5) (2019-04-20)
 
 
