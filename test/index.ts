@@ -549,7 +549,7 @@ describe('Instance context variables', () => {
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal(
 			// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-			'function myFunction() { var x = 1; return x; }, function myFunction() { var x = 1; return x; }\n',
+			'function myFunction() { const x = 1; return x; }, function myFunction() { const x = 1; return x; }\n',
 			'created the correct log entry');
 	});
 	it('should support logging arrays', () => {
