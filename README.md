@@ -7,9 +7,13 @@
 [![Coverage Status][coverage-image]][coverage-url]
 [![Open Issues][issues-image]][issues-url]
 
-An extremely lightweight but powerful Node.js logger that's great for modern cloud/serverless applications.
+<img alt="Sitka logo" src="logo.png" width="192" height="192" align="right" style="float: right;" />
+
+An extremely lightweight but powerful logger that's great for full-stack TypeScript/JavaScript cloud applications.
 
 Sitka promotes the best practices of [twelve-factor apps](https://12factor.net/) through writing to stdout/stderr by default and allowing configuration of log level and format via environment variables.
+
+Now packaged as a Universal Module Definition (UMD) to enable client-side usage as well as server-side use in Node.js!
 
 ## Contents
 
@@ -193,9 +197,9 @@ The log level can be set to any of these values (in increasing order):
 * Logger.Level.FATAL
 * Logger.Level.ERROR
 * Logger.Level.WARN
-* Logger.Level.INFO
+* Logger.Level.INFO or Logger.Level.LOG (same level)
 * Logger.Level.DEBUG
-* Logger.Level.TRACE
+* Logger.Level.TRACE or Logger.Level.VERBOSE (same level)
 * Logger.Level.ALL
 
 ### Log Format
@@ -254,7 +258,7 @@ Read what people are saying about Sitka:
 > "This could easily be the best logger I've ever written."
 > - Chris Wells, Creator of Sitka
 
-> "With less than 250 lines of code and 0 dependencies, I love how environmentally friendly this logger is."
+> "With less than 300 lines of code and 0 dependencies, I love how environmentally friendly this logger is."
 > - Chris Wells, Creator of Sitka
 
 ## Contributing
