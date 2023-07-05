@@ -549,7 +549,7 @@ describe('Instance context variables', () => {
 		expect(output).to.have.lengthOf(1, '1 line was logged');
 		expect(output[0]).to.equal(
 			// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-			'function myFunction() { var x = 1; return x; }, function myFunction() { var x = 1; return x; }\n',
+			'function myFunction() { const x = 1; return x; }, function myFunction() { const x = 1; return x; }\n',
 			'created the correct log entry');
 	});
 	it('should support logging arrays', () => {
@@ -677,7 +677,13 @@ function forEveryLogMethod(callback: LogMethodCallback) { // eslint-disable-line
 }
 
 function checkOutputAtLogLevel(logger: Logger, logLevel: LogLevel) { // eslint-disable-line prefer-arrow/prefer-arrow-functions
-	const expectedLines = (logLevel === LogLevel.ALL ? LogLevel.ALL - 1 : logLevel) - 1;
+	let expectedLines = (logLevel === LogLevel.ALL ? LogLevel.ALL - 1 : logLevel) - 1;
+	// Adjustments to account for aliases. -- cwells
+	if (logLevel >= LogLevel.TRACE) {
+		expectedLines += 2;
+	} else if (logLevel >= LogLevel.INFO) {
+		expectedLines += 1;
+	}
 	let errlog: string[] = [];
 	const stdlog: string[] = stdout.inspectSync(() => {
 		errlog = stderr.inspectSync(() => {

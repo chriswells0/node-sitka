@@ -29,8 +29,10 @@ export enum LogLevel {
 	ERROR,
 	WARN,
 	INFO,
+	LOG = LogLevel.INFO,
 	DEBUG,
 	TRACE,
+	VERBOSE = LogLevel.TRACE,
 	ALL,
 }
 
@@ -126,19 +128,24 @@ export class Logger {
 	/* Public Instance Methods */
 
 	public debug(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
-		return (this._level >= LogLevel.DEBUG ? this.log('DEBUG', message, ...args) : false);
+		return (this._level >= LogLevel.DEBUG ? this.write('DEBUG', message, ...args) : false);
 	}
 
 	public error(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
-		return (this._level >= LogLevel.ERROR ? this.log('ERROR', message, ...args) : false);
+		return (this._level >= LogLevel.ERROR ? this.write('ERROR', message, ...args) : false);
 	}
 
 	public fatal(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
-		return (this._level >= LogLevel.FATAL ? this.log('FATAL', message, ...args) : false);
+		return (this._level >= LogLevel.FATAL ? this.write('FATAL', message, ...args) : false);
 	}
 
 	public info(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
-		return (this._level >= LogLevel.INFO ? this.log('INFO', message, ...args) : false);
+		return (this._level >= LogLevel.INFO ? this.write('INFO', message, ...args) : false);
+	}
+
+	// Essentially the same as info(). -- cwells
+	public log(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
+		return (this._level >= LogLevel.LOG ? this.write('LOG', message, ...args) : false);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -151,11 +158,16 @@ export class Logger {
 	}
 
 	public trace(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
-		return (this._level >= LogLevel.TRACE ? this.log('TRACE', message, ...args) : false);
+		return (this._level >= LogLevel.TRACE ? this.write('TRACE', message, ...args) : false);
+	}
+
+	// Essentially the same as trace(). -- cwells
+	public verbose(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
+		return (this._level >= LogLevel.VERBOSE ? this.write('VERBOSE', message, ...args) : false);
 	}
 
 	public warn(message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
-		return (this._level >= LogLevel.WARN ? this.log('WARN', message, ...args) : false);
+		return (this._level >= LogLevel.WARN ? this.write('WARN', message, ...args) : false);
 	}
 
 	/* Private Instance Methods */
@@ -206,7 +218,7 @@ export class Logger {
 		return '';
 	}
 
-	private log(level: string, message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
+	private write(level: string, message: any, ...args: any[]): any { // eslint-disable-line @typescript-eslint/no-explicit-any
 		message = this.convertToString(message);
 		if (this._regexMessageQuoted.test(this._format)) { // Message is inside quotes, so escape it. -- cwells
 			message = message.replace(this._regexDoubleQuote, '\\"')
