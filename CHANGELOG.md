@@ -1,3 +1,12 @@
+# [1.1.0](https://github.com/chriswells0/node-sitka/compare/v1.0.7...v1.1.0) (2023-07-05)
+
+
+### Features
+
+* package as a UMD and add method aliases for use in NestJS ([c5b1c2d](https://github.com/chriswells0/node-sitka/commit/c5b1c2d23c1a3033fba07560af9679e13e86906c)), closes [#129](https://github.com/chriswells0/node-sitka/issues/129)
+
+
+
 ## [1.0.7](https://github.com/chriswells0/node-sitka/compare/v1.0.6...v1.0.7) (2023-04-29)
 
 
