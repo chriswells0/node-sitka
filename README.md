@@ -7,13 +7,17 @@
 [![Coverage Status][coverage-image]][coverage-url]
 [![Open Issues][issues-image]][issues-url]
 
-<img alt="Sitka logo" src="logo.png" width="192" height="192" align="right" style="float: right;" />
+<p align="center">
+	<img alt="Sitka logo" src="logo.png" width="192" height="192" />
+</p>
 
 An extremely lightweight but powerful logger that's great for full-stack TypeScript/JavaScript cloud applications.
 
 Sitka promotes the best practices of [twelve-factor apps](https://12factor.net/) through writing to stdout/stderr by default and allowing configuration of log level and format via environment variables.
 
 Now packaged as a Universal Module Definition (UMD) to enable client-side usage as well as server-side use in Node.js!
+
+----
 
 ## Contents
 
