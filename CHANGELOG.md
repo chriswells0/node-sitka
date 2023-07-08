@@ -1,3 +1,7 @@
+## [1.1.1](https://github.com/chriswells0/node-sitka/compare/v1.1.0...v1.1.1) (2023-07-08)
+
+
+
 # [1.1.0](https://github.com/chriswells0/node-sitka/compare/v1.0.7...v1.1.0) (2023-07-05)
 
 
